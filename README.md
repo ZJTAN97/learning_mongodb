@@ -97,3 +97,120 @@ $not # Returns all documents that do not match the expression
 
 
 ```
+
+Sorting
+
+```
+
+# sort users by name (asc) and then age (desc)
+db.users.find().sort({ name:1, age:-1 })
+
+
+```
+
+Example of using $in operator and $or operator
+
+```
+
+db.inspections.find("result":{$in:["Unable to Locate", "Violation issued"]}})
+
+===
+
+db.inspections.find({$or:[{"result":"Violation issued"},{"result":"Unable to Locate"}]})
+
+```
+
+<br>
+<hr>
+<br>
+
+## Something to note about $and operator
+
+```
+
+# if same field, have to use and gate to chain else the 2nd comparison will overwrite 1st one
+# only if two fields are different, it will be implicitly known as and $and operation
+($and: [{"age": {$lt: 200}}, {"age": {$gt: 100}}])
+
+# alternatively can be like this
+{"age": {$lt: 200, $gt: 100}}
+
+```
+
+<br>
+<hr>
+<br>
+
+## $expr operator
+
+-   Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
+-   good for comparing 2 fields in the document
+
+```
+
+{$expr: {operator: [field, value]}}
+
+
+# Example query trip duration > 400
+
+# Normally
+{"tripduration": {$gt: 400}}
+
+# expr
+{$expr: {$gt: ["$tripduration", 400]}}
+
+
+
+# Return same start and end locations in routes
+
+db.routes.find($expr: {$eq:["$src": $dst]})
+
+```
+
+<br>
+<hr>
+<br>
+
+## Element Operators
+
+$exists --> Returns documents that contain the specified field
+
+$type --> Returns fields that contain values of a specific data type
+
+```
+# return persons that has school fields
+db.person.find({"school": {$exists: true}})
+
+```
+
+<br>
+<hr>
+<br>
+
+## Cursors methods
+
+<br>
+
+Count --> Returns number of documents in the result set
+
+Sort --> Orders the documents based on specified fields
+
+Limit --> Limits the number of documents returned
+
+Skip --> Skips the first X number of documents
+
+Size --> Used when you applied skip or limit to your records
+
+<br>
+<hr>
+<br>
+
+## Projection
+
+-   if nothing specified, means all fields will be displayed by default
+
+```
+# return data with fields name and founded_year only
+db.inspections.find({},{"name": 1, "founded_year": 1})
+
+```
