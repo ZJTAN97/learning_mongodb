@@ -5,15 +5,17 @@
 # to access mongosh
 docker run -it --network learning_mongodb_default --rm mongo mongosh --host learning_mongodb_mongo_1 test
 
+docker run -it --network learning_mongodb_default --rm mongo mongosh --host mongo-db
+
 ```
 
 ## Documents
 
--   Documents are polymorphic, do not have a fixed structure
--   Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
--   Uses JSON format
--   "\_id" field is auto populated
--   Can have nested documents --> which looks like a nested JSON
+- Documents are polymorphic, do not have a fixed structure
+- Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
+- Uses JSON format
+- "\_id" field is auto populated
+- Can have nested documents --> which looks like a nested JSON
 
 ```
 
@@ -31,8 +33,8 @@ docker run -it --network learning_mongodb_default --rm mongo mongosh --host lear
 
 ```
 
--   Can have different key value pair on each document in a single collection
--   But must ensure consistent field names across documents
+- Can have different key value pair on each document in a single collection
+- But must ensure consistent field names across documents
 
 <br>
 <hr>
@@ -143,8 +145,8 @@ db.inspections.find({$or:[{"result":"Violation issued"},{"result":"Unable to Loc
 
 ## $expr operator
 
--   Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
--   good for comparing 2 fields in the document
+- Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
+- good for comparing 2 fields in the document
 
 ```
 
@@ -207,10 +209,184 @@ Size --> Used when you applied skip or limit to your records
 
 ## Projection
 
--   if nothing specified, means all fields will be displayed by default
+- if nothing specified, means all fields will be displayed by default
 
 ```
 # return data with fields name and founded_year only
 db.inspections.find({},{"name": 1, "founded_year": 1})
+
+```
+
+<br>
+<hr>
+<br>
+
+## Querying embedded document
+
+```
+
+# Example, how to query address
+
+{
+  _id: ObjectId("56d61033a378eccde8a8354f"),
+  id: '10021-2015-ENFO',
+  certificate_number: 9278806,
+  business_name: 'ATLIXCO DELI GROCERY INC.',
+  date: 'Feb 20 2015',
+  result: 'No Violation Issued',
+  sector: 'Cigarette Retail Dealer - 127',
+  address: { city: 'RIDGEWOOD', zip: 11385, street: 'MENAHAN ST', number: 1712 }
+}
+
+db.inspections.find({"address.zip": 11385})
+
+
+```
+
+<br>
+<hr>
+<br>
+
+## Querying arrays
+
+Refer to this docs if you really need some starter idea
+
+https://www.mongodb.com/docs/manual/reference/operator/query/
+
+```
+
+# Example
+
+  {
+    _id: ObjectId("50ab0f8cbcf1bfe2536dc78d"),
+    tags: [
+      'current',  'quartz',
+      'textbook', 'bus',
+      'roof',     'lentil',
+      'flute',    'mile',
+      'spain',    'sagittarius'
+    ]
+  }
+
+
+db.posts.find({"tags": "roof"}) # find tags that contain item only roof
+
+db.posts.find({"tags": {$all: ["current"]}}, {"tags": 1}) # find tags that has current, note the difference from the top example
+
+```
+
+Query by Size
+
+```
+
+db.posts.find("tags": {$size: 10}) # find tags that has array size of 10
+
+db.grades.find({"scores.type": "exam"})
+
+```
+
+elemMatch
+
+```
+
+db.grades.find({"scores": {$elemMatch: {"type": "exam", "score": {$gt: 80}}}})
+
+```
+
+<br>
+<hr>
+<br>
+
+## Aggregation Framework
+
+```
+
+db.collection.aggregate([{stage 1}, {stage 2}, ...{stage N}], {options})
+
+```
+
+$match
+
+- like a filter based on the specific condition
+- only those who meet the condition get passed on the next stage of the pipeline
+
+```
+db.companies.aggregate([{$match: {"founded_year": {$gte: 2005, $lte:2010}}}])
+db.grades.aggregate([{$match: {"class_id": 116}}])
+
+```
+
+<br>
+
+$project
+
+```
+
+```
+
+<br>
+<hr>
+<br>
+
+## Schema Validation
+
+- Schema validation is most useful for an established application where you have a good sense of how to organize our data.
+- Schema validation allows you to apply constraints on your document's structure.
+
+<br>
+
+Example
+
+1. For a users collection, ensure the `password` field is stored as string. This validation prevents users from saving password as an unexpected data type.
+2. For a sales collection, ensure that the `item` field belongs to a list of items that your store sells. This validation prevents a user from accidentally misspelling an item name when entering sales data.
+
+<br>
+
+When does MongoDB checks validation?
+
+- During creation of a new collection with schema validation, MongoDB checks validation during `updates` and `inserts` in that collection.
+- This means documents that already exists are not checked for validation until they are modified.
+
+<br>
+
+```
+
+# Example JSON Schema for the following document
+
+db.peaks.insertOne(
+    {
+        "name": "Everest",
+        "height": 8848,
+        "location": ["Nepal", "China"],
+        "ascents": {
+            "first": {
+                "year": 1953
+            },
+            "first_winter": {
+                "year": 1980
+            },
+            "total": 5656
+        }
+    }
+)
+
+
+# Json Schema
+
+$:jsonSchema: {
+  # almost always object at the root level
+  "bsonType": "object",
+  # Optional description
+  "description": "Document describing a mountain peak",
+  # Only accept array containing list of document fields that must be present in every document in the collection
+  "required": ["name"],
+  # You can also define fields that are not in the required array
+  "properties": {
+      "name": {
+        "bsonType": "string",
+        "description": "Name must be a string and is required"
+      }
+  }
+}
 
 ```
