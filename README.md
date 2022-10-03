@@ -317,10 +317,49 @@ db.grades.aggregate([{$match: {"class_id": 116}}])
 ```
 
 <br>
-
-$project
+$match and $project example
 
 ```
+
+// Use the $match stage on the trips collection to return all documents where the ""stop time" os after 2016-01-05
+// Collection Name: trips
+
+db.trips.aggregate([{$match:{"stop time": {$gt: ISODate("2016-01-05")}}}])
+
+// Use $project to project only the "start station location" and "end station location" fields but to display only the coordinate values.
+// Collection Name: trips
+
+db.trips.aggregate([
+  {
+    $project: {
+      _id: 0,
+      "start station location": "$start station location.coordinates",
+      "end station location": "$end station location.coordinates",
+    },
+  },
+]);
+
+// Use $project and $match on the zips collection to return the zip codes from the city Houston where the population is over 40000. But display only the "zip" and "pop" fields in the resulting documents.
+// Collection Name: zips
+
+db.zips.aggregate([
+  {
+    $match: {
+      city: "HOUSTON",
+      pop: {
+        $gt: 40000
+      }
+    },
+  },
+  {
+    $project: {
+        "_id": 0,
+        "zip": 1,
+        "pop": 1
+    }
+  }
+]);
+
 
 ```
 
@@ -373,20 +412,38 @@ db.peaks.insertOne(
 
 # Json Schema
 
-$:jsonSchema: {
-  # almost always object at the root level
-  "bsonType": "object",
-  # Optional description
-  "description": "Document describing a mountain peak",
-  # Only accept array containing list of document fields that must be present in every document in the collection
-  "required": ["name"],
-  # You can also define fields that are not in the required array
-  "properties": {
-      "name": {
-        "bsonType": "string",
-        "description": "Name must be a string and is required"
-      }
-  }
-}
+validator: {
+    $jsonSchema: {
+      // almost always object at the root level
+      bsonType: "object",
+      // Optional description
+      description: "Document describing a mountain peak",
+      // Only accept array containing list of document fields that must be present in every document in the collection
+      required: ["name"],
+      // You can also define fields that are not in the required array
+      properties: {
+        name: {
+          bsonType: "string",
+          description: "Name must be a string and is required",
+        },
+      },
+    },
+    // strict: MongoDB applies validation rules to all inserts and updates
+    // moderate: MongoDB applies validation rules to inserts and to updates on existing documents that already fufill the validation criteria.
+    // Updates to existing documents taht do not fufill the validation criteria are not checked for validation.
+    validationLevel: "moderate",
+    // error: MongoDB rejects any insert or update that violates the validation criteria
+    // warn: MongoDB logs any violations but allows the insertion or update to proceed
+    validationAction: "warn",
+  },
 
 ```
+
+<br>
+<hr>
+<br>
+
+`$lookup`
+
+- similar to left outer join
+- an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in anohter collection ("from"), matcing documents are added as an array of embedded documents.
