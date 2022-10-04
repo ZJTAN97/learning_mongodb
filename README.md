@@ -1,15 +1,12 @@
-## To use with Docker
+# To use with Docker
 
 ```
-
 # to access mongosh
-docker run -it --network learning_mongodb_default --rm mongo mongosh --host learning_mongodb_mongo_1 test
-
-docker run -it --network learning_mongodb_default --rm mongo mongosh --host mongo-db
+docker exec -it mongo-db mongosh
 
 ```
 
-## Documents
+# Documents
 
 - Documents are polymorphic, do not have a fixed structure
 - Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
@@ -37,10 +34,8 @@ docker run -it --network learning_mongodb_default --rm mongo mongosh --host mong
 - But must ensure consistent field names across documents
 
 <br>
-<hr>
-<br>
 
-## Mongo Query Language
+# Mongo Query Language
 
 ```
 # To show all available Databases
@@ -123,10 +118,8 @@ db.inspections.find({$or:[{"result":"Violation issued"},{"result":"Unable to Loc
 ```
 
 <br>
-<hr>
-<br>
 
-## Something to note about $and operator
+# Something to note about $and operator
 
 ```
 
@@ -140,10 +133,8 @@ db.inspections.find({$or:[{"result":"Violation issued"},{"result":"Unable to Loc
 ```
 
 <br>
-<hr>
-<br>
 
-## $expr operator
+# $expr operator
 
 - Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
 - good for comparing 2 fields in the document
@@ -170,10 +161,8 @@ db.routes.find($expr: {$eq:["$src": $dst]})
 ```
 
 <br>
-<hr>
-<br>
 
-## Element Operators
+# Element Operators
 
 $exists --> Returns documents that contain the specified field
 
@@ -186,10 +175,8 @@ db.person.find({"school": {$exists: true}})
 ```
 
 <br>
-<hr>
-<br>
 
-## Cursors methods
+# Cursors methods
 
 <br>
 
@@ -204,10 +191,8 @@ Skip --> Skips the first X number of documents
 Size --> Used when you applied skip or limit to your records
 
 <br>
-<hr>
-<br>
 
-## Projection
+# Projection
 
 - if nothing specified, means all fields will be displayed by default
 
@@ -218,10 +203,8 @@ db.inspections.find({},{"name": 1, "founded_year": 1})
 ```
 
 <br>
-<hr>
-<br>
 
-## Querying embedded document
+# Querying embedded document
 
 ```
 
@@ -244,10 +227,8 @@ db.inspections.find({"address.zip": 11385})
 ```
 
 <br>
-<hr>
-<br>
 
-## Querying arrays
+# Querying arrays
 
 Refer to this docs if you really need some starter idea
 
@@ -294,10 +275,50 @@ db.grades.find({"scores": {$elemMatch: {"type": "exam", "score": {$gt: 80}}}})
 ```
 
 <br>
-<hr>
+
+# Updating Documents `updateOne`, `updateMany` and update operators
+
+```
+
+db.collection.updateOne({filter}, {update}, {options})
+db.collection.updateMany({filter}, {update}, {options})
+
+// updateMany example
+db.person.updateMany({"name": "Test1"}, {$set: {"name": "Tester 1"}})
+
+
+```
+
+- if field is not present before, it will be implicitly added to the schema.
+
 <br>
 
-## Aggregation Framework
+Update Operators
+
+- $unset // dropping fields
+- $inc // increment number values
+- $rename // rename the field basically
+- $push // add elements to array types
+
+```
+
+// if first field empty, means update all
+
+db.person.updateMany({}, {$unset:{"new_field": ""}})
+
+
+```
+
+<br>
+
+upsert
+
+- The term upsert is a portmanteau – a combination of the words “update” and “insert.”
+- In the context of relational databases, an upsert is a database operation that will update an existing row if a specified value already exists in a table, and insert a new row if the specified value doesn't already exist.
+
+<br>
+
+# Aggregation Framework
 
 ```
 
@@ -367,7 +388,7 @@ db.zips.aggregate([
 <hr>
 <br>
 
-## Schema Validation
+# Schema Validation
 
 - Schema validation is most useful for an established application where you have a good sense of how to organize our data.
 - Schema validation allows you to apply constraints on your document's structure.
@@ -390,7 +411,9 @@ When does MongoDB checks validation?
 
 ```
 
-# Example JSON Schema for the following document
+<br>
+
+## Example JSON Schema for the following document
 
 db.peaks.insertOne(
     {
@@ -409,8 +432,9 @@ db.peaks.insertOne(
     }
 )
 
+<br>
 
-# Json Schema
+## Json Schema
 
 validator: {
     $jsonSchema: {
@@ -440,10 +464,16 @@ validator: {
 ```
 
 <br>
-<hr>
-<br>
 
-`$lookup`
+# operator $lookup
 
 - similar to left outer join
 - an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in anohter collection ("from"), matcing documents are added as an array of embedded documents.
+
+<br>
+<hr>
+<br>
+
+# Indexes
+
+- supports efficient execution of queries

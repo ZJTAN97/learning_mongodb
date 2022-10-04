@@ -128,15 +128,80 @@ db.zips.aggregate([
     $match: {
       city: "HOUSTON",
       pop: {
-        $gt: 40000
-      }
+        $gt: 40000,
+      },
     },
   },
   {
     $project: {
-        "_id": 0,
-        "zip": 1,
-        "pop": 1
-    }
-  }
+      _id: 0,
+      zip: 1,
+      pop: 1,
+    },
+  },
 ]);
+
+db.runCommand({
+  collMod: "person",
+  validator: {
+    $jsonSchema: {
+      bsonType: "object",
+      description: "Document describing a person",
+      required: ["name", "age", "hobbies"],
+      properties: {
+        name: {
+          bsonType: "string",
+          description: "Name must be a string and required",
+        },
+        age: {
+          bsonType: "number",
+          description: "Age must be a number and required",
+          minimum: 1,
+          maximum: 100,
+        },
+        hobbies: {
+          bsonType: "array",
+          description: "Hobbies must be an array of strings",
+          minItems: 1,
+          uniqueItems: true,
+          items: {
+            bsonType: "string",
+          },
+        },
+      },
+    },
+  },
+});
+
+db.person.insertMany(
+  [
+    {
+      name: "Test1",
+      age: 12,
+      hobbies: ["testing"],
+    },
+    {
+      name: "Test2",
+      age: 13,
+      hobbies: ["testing2"],
+    },
+    {
+      name: "Test3",
+      age: 14,
+      hobbies: ["testing3"],
+    },
+    {
+      name: "Test4",
+      age: 13,
+      hobbies: ["testing4"],
+    },
+    {
+      name: "Test5",
+      age: 14,
+      hobbies: ["testing5"],
+    },
+  ],
+  {
+    ordered: false,
+  }
+);
