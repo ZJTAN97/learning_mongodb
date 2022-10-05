@@ -205,3 +205,48 @@ db.person.insertMany(
     ordered: false,
   }
 );
+
+db.trips.aggregate([
+  {
+    $project: {
+      tripduration: 1,
+      tripduration_hrs: {
+        $round: [{ $divide: ["$tripduration", 60] }, 1],
+      },
+    },
+  },
+]);
+
+db.trips.aggregate([
+  { $match: { birth_year: { $gt: { $multiply: ["$tripduration", 3] } } } },
+]);
+
+db.trips.aggregate([
+  {
+    $match: {
+      $expr: {
+        $gt: [
+          {
+            $multiply: ["$tripduration", 3],
+          },
+          "$birth_year",
+        ],
+      },
+    },
+  },
+]);
+
+db.trips.aggregate([
+  { $project: { "start station name": { $toUpper: "$start station name" } } },
+]);
+
+db.trips.aggregate([
+  {
+    $project: {
+      "start station name": 1,
+      journey: {
+        $concat: ["$start station name", "-", "$end station name"],
+      },
+    },
+  },
+]);

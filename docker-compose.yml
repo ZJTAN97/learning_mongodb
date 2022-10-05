@@ -1,12 +1,11 @@
-version: '3.1'
+version: "3.1"
 
 services:
-
   mongo:
     container_name: mongo-db
     image: mongo
-    ports: 
-      - '27017:27017'
+    ports:
+      - "27017:27017"
     volumes:
       - mongo:/data/db
 
