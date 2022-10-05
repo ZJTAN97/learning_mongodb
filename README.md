@@ -468,13 +468,18 @@ db.trips.aggregate([
 
 <br>
 
-## Date Expression Operators
+## Comparison Expression Operators
 
 ```
 
+// example
+
+
+
 
 ```
 
+<br>
 <br>
 
 ## operator $lookup

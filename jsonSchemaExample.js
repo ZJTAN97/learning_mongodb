@@ -250,3 +250,11 @@ db.trips.aggregate([
     },
   },
 ]);
+
+db.trips.aggregate({
+  $match: {
+    $expr: {
+      $gt: ["$tripduration", 1000],
+    },
+  },
+});
