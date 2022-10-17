@@ -1,9 +1,9 @@
 # 1. Setup and Introduction
 
-- To better understand MongoDB commands and MQL, start a local docker mongodb container that comes with mongo shell.
-- A docker-compose file with the required configuration has been included in this repository.
-- Install Compass if you want a more GUI experience.
-- Can refer to `mongo-docs-example` for some examples and workings.
+-   To better understand MongoDB commands and MQL, start a local docker mongodb container that comes with mongo shell.
+-   A docker-compose file with the required configuration has been included in this repository.
+-   Install Compass if you want a more GUI experience.
+-   Can refer to `mongo-docs-example` for some examples and workings.
 
 <br>
 
@@ -22,11 +22,11 @@ docker exec -it mongo-db mongosh
 
 # 2. Documents
 
-- Documents are polymorphic, do not have a fixed structure
-- Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
-- Uses JSON format
-- "\_id" field is auto populated
-- Can have nested documents --> which looks like a nested JSON
+-   Documents are polymorphic, do not have a fixed structure
+-   Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
+-   Uses JSON format
+-   "\_id" field is auto populated
+-   Can have nested documents --> which looks like a nested JSON
 
 ```
 
@@ -44,8 +44,8 @@ docker exec -it mongo-db mongosh
 
 ```
 
-- Can have different key value pair on each document in a single collection
-- But must ensure consistent field names across documents
+-   Can have different key value pair on each document in a single collection
+-   But must ensure consistent field names across documents
 
 <br>
 <br>
@@ -155,8 +155,8 @@ db.inspections.find({$or:[{"result":"Violation issued"},{"result":"Unable to Loc
 
 ## $expr operator
 
-- Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
-- good for comparing 2 fields in the document
+-   Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
+-   good for comparing 2 fields in the document
 
 ```
 
@@ -214,7 +214,7 @@ Size --> Used when you applied skip or limit to your records
 
 # 4. Projection
 
-- if nothing specified, means all fields will be displayed by default
+-   if nothing specified, means all fields will be displayed by default
 
 ```
 # return data with fields name and founded_year only
@@ -312,16 +312,16 @@ db.person.updateMany({"name": "Test1"}, {$set: {"name": "Tester 1"}})
 
 ```
 
-- if field is not present before, it will be implicitly added to the schema.
+-   if field is not present before, it will be implicitly added to the schema.
 
 <br>
 
 ## Update Operators
 
-- $unset // dropping fields
-- $inc // increment number values
-- $rename // rename the field basically
-- $push // add elements to array types
+-   $unset // dropping fields
+-   $inc // increment number values
+-   $rename // rename the field basically
+-   $push // add elements to array types
 
 ```
 
@@ -336,13 +336,19 @@ db.person.updateMany({}, {$unset:{"new_field": ""}})
 
 ## upsert
 
-- The term upsert is a portmanteau – a combination of the words “update” and “insert.”
-- In the context of relational databases, an upsert is a database operation that will update an existing row if a specified value already exists in a table, and insert a new row if the specified value doesn't already exist.
+-   The term upsert is a portmanteau – a combination of the words “update” and “insert.”
+-   In the context of relational databases, an upsert is a database operation that will update an existing row if a specified value already exists in a table, and insert a new row if the specified value doesn't already exist.
 
 <br>
 <br>
 
 # 8. Aggregation Framework
+
+-   Aggregation Framework allows for more advanced operations
+
+<br>
+
+General Syntax for Aggregation Framework
 
 ```
 
@@ -350,10 +356,12 @@ db.collection.aggregate([{stage 1}, {stage 2}, ...{stage N}], {options})
 
 ```
 
+<br>
+
 ## $match
 
-- like a filter based on the specific condition
-- only those who meet the condition get passed on the next stage of the pipeline
+-   like a filter based on the specific condition
+-   only those who meet the condition get passed on the next stage of the pipeline
 
 ```
 db.companies.aggregate([{$match: {"founded_year": {$gte: 2005, $lte:2010}}}])
@@ -484,16 +492,16 @@ db.trips.aggregate([
 
 ## operator $lookup
 
-- similar to left outer join
-- an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in another collection ("from"), matcing documents are added as an array of embedded documents.
+-   similar to left outer join
+-   an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in another collection ("from"), matcing documents are added as an array of embedded documents.
 
 <br>
 <br>
 
 # 9. Schema Validation
 
-- Schema validation is most useful for an established application where you have a good sense of how to organize our data.
-- Schema validation allows you to apply constraints on your document's structure.
+-   Schema validation is most useful for an established application where you have a good sense of how to organize our data.
+-   Schema validation allows you to apply constraints on your document's structure.
 
 <br>
 
@@ -506,8 +514,8 @@ Example
 
 When does MongoDB checks validation?
 
-- During creation of a new collection with schema validation, MongoDB checks validation during `updates` and `inserts` in that collection.
-- This means documents that already exists are not checked for validation until they are modified.
+-   During creation of a new collection with schema validation, MongoDB checks validation during `updates` and `inserts` in that collection.
+-   This means documents that already exists are not checked for validation until they are modified.
 
 <br>
 
@@ -569,7 +577,7 @@ validator: {
 
 ## Validation for `null` Field Values
 
-- must explicitly set the bsonType to allow null values
+-   must explicitly set the bsonType to allow null values
 
 ```
 
@@ -667,6 +675,6 @@ moderate --> MongoDB only applies validation rules to existing valid documents. 
 
 # 10. Indexes
 
-- supports efficient execution of queries
+-   supports efficient execution of queries
 
 <br>
