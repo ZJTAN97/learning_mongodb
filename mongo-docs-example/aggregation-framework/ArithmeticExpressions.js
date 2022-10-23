@@ -32,3 +32,18 @@ db.trips.aggregate([
         },
     },
 ]);
+
+// use $divide and $subtract on trips collection
+// return difference between "start time" and "stop time" fields in minutes
+// $subtract on two dates --> returns difference in milliseconds
+db.trips.aggregate([
+    {
+        $project: {
+            _id: 0,
+            "tripduration": 1,
+            "journey time": {
+                $divide: [{ $subtract: ["$stop time", "$start time"] }, 1000],
+            },
+        },
+    },
+]);

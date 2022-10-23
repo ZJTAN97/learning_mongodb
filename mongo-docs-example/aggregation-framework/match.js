@@ -26,3 +26,18 @@ db.grades.aggregate([
         },
     },
 ]);
+
+// use $match and return only documents where "start station name" value contains string "Whitehall"
+// when use match --> need use $expr
+db.trips.aggregate([
+    {
+        $match: {
+            $expr: {
+                $regexMatch: {
+                    input: "$start station name",
+                    regex: "Whitehall",
+                },
+            },
+        },
+    },
+]);
