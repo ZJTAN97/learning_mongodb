@@ -476,24 +476,86 @@ db.trips.aggregate([
 
 <br>
 
-## Comparison Expression Operators
+## $bucket
+
+-   Categorizes incoming documents into groups, called buckets
 
 ```
 
 // example
 
+ db.trips.aggregate([{$bucket: {groupBy: "$tripduration", boundaries:[0,100,1000,10000,1000000], default:"other"}}])
 
+// Result
+[
+  { _id: 0, count: 90 },
+  { _id: 100, count: 7153 },
+  { _id: 1000, count: 2693 },
+  { _id: 10000, count: 64 }
+]
 
 
 ```
 
 <br>
+
+## $facet
+
+-   The facet collector groups results by values or ranges in the specified faceted fields and returns the count for each of those groups.
+
+```
+
+db.trips.aggregate([
+    {
+        $facet: {
+            BucketManual: [
+                {
+                    $bucket: {
+                        groupBy: "$tripduration",
+                        boundaries: [0, 100, 1000, 10000],
+                        default: "other",
+                    },
+                },
+            ],
+            BucketAuto: [
+                { $bucketAuto: { groupBy: "$tripduration", buckets: 4 } },
+            ],
+        },
+    },
+]);
+
+
+```
+
 <br>
 
-## operator $lookup
+### operator $lookup
 
 -   similar to left outer join
 -   an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in another collection ("from"), matcing documents are added as an array of embedded documents.
+
+<br>
+
+### $unwind
+
+-   $unwind Deconstructs an array field from the input documents to output a document for each element. Each output document is the input document with the value of the array field replaced by the element.
+
+```
+{ "_id" : 1, "item" : "ABC", "sizes": [ "S", "M", "L"] }
+{ "_id" : 2, "item" : "EFG", "sizes" : [ ] }
+{ "_id" : 3, "item" : "IJK", "sizes": "M" }
+{ "_id" : 4, "item" : "LMN" }
+{ "_id" : 5, "item" : "XYZ", "sizes" : null }
+
+
+// becomes
+
+{ "_id" : 1, "item" : "ABC", "sizes" : "S" }
+{ "_id" : 1, "item" : "ABC", "sizes" : "M" }
+{ "_id" : 1, "item" : "ABC", "sizes" : "L" }
+{ "_id" : 3, "item" : "IJK", "sizes" : "M" }
+
+```
 
 <br>
 <br>
@@ -665,10 +727,18 @@ db.runCommand({ collMod: "<collection_name>", validator: {
 
 <br>
 
-## Specify Validation Level for Existing Documents
+### Specify Validation Level for Existing Documents
 
 strict --> Default, MongoDB applies validation rules to all inserts and updates.
 moderate --> MongoDB only applies validation rules to existing valid documents. Updates to invalid documents which exist prior to the validation being added are not checked for validity.
+
+<br>
+
+### Types Of Relationships
+
+-   One-To-One --> recommended to store as embedded documents
+-   One-To-Many --> recommended to store as seperate collections, then reference the object. However it also depends on the nature of the situation
+-   Many-To-Many --> recommended to store as seperate collections
 
 <br>
 <br>
@@ -676,5 +746,66 @@ moderate --> MongoDB only applies validation rules to existing valid documents. 
 # 10. Indexes
 
 -   supports efficient execution of queries
+-   Indexes however takes up storage space
+-   should be created on commonly queried fields
 
+```
+
+db.collection.createIndex(keys, options)
+
+```
+
+<br>
+
+### More about B-Tree indexes
+
+-   Imagining searching through a book, the fastest way is to look through the index page
+
+<br>
+
+<h4>B Trees</h4>
+
+-   Store more than one value in a single node
+-   have more than two children per node
+-   idea is to keep the level of the tree as low as possible so there is no need to traverse through so much.
+-   The lower value goes to the left, higher value goes to the right
+
+https://www.cs.usfca.edu/~galles/visualization/BTree.html
+
+<br>
+
+### The Explain Method
+
+```
+db.collection.method().explain("executionStats")
+
+```
+
+<br>
+
+### Compound Indexes
+
+-   For sorting and filtering, you must follow the order you indexed by!!
+-   if not it will not work
+
+Example
+
+```
+
+sort by {"student_id": 1, "class_id": 265 }
+
+# Class Id is sorted based on Student Id
+
+# thus for the Id of class to work, we need to sort student then class
+
+
+```
+
+<br>
+
+### Hint
+
+-   Force mongoDB to use a certain index
+
+<br>
 <br>
