@@ -1,9 +1,9 @@
 # 1. Setup and Introduction
 
--   To better understand MongoDB commands and MQL, start a local docker mongodb container that comes with mongo shell.
--   A docker-compose file with the required configuration has been included in this repository.
--   Install Compass if you want a more GUI experience.
--   Can refer to `mongo-docs-example` for some examples and workings.
+- To better understand MongoDB commands and MQL, start a local docker mongodb container that comes with mongo shell.
+- A docker-compose file with the required configuration has been included in this repository.
+- Install Compass if you want a more GUI experience.
+- Can refer to `mongo-docs-example` for some examples and workings.
 
 <br>
 
@@ -22,11 +22,11 @@ docker exec -it mongo-db mongosh
 
 # 2. Documents
 
--   Documents are polymorphic, do not have a fixed structure
--   Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
--   Uses JSON format
--   "\_id" field is auto populated
--   Can have nested documents --> which looks like a nested JSON
+- Documents are polymorphic, do not have a fixed structure
+- Changes can be made easily to an individual document structure, e.g. new field value pairs can be added
+- Uses JSON format
+- "\_id" field is auto populated
+- Can have nested documents --> which looks like a nested JSON
 
 ```
 
@@ -44,8 +44,8 @@ docker exec -it mongo-db mongosh
 
 ```
 
--   Can have different key value pair on each document in a single collection
--   But must ensure consistent field names across documents
+- Can have different key value pair on each document in a single collection
+- But must ensure consistent field names across documents
 
 <br>
 <br>
@@ -155,8 +155,8 @@ db.inspections.find({$or:[{"result":"Violation issued"},{"result":"Unable to Loc
 
 ## $expr operator
 
--   Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
--   good for comparing 2 fields in the document
+- Can achieve something like: show me all documents where value of "field1" is same as the value of "field2"
+- good for comparing 2 fields in the document
 
 ```
 
@@ -214,7 +214,7 @@ Size --> Used when you applied skip or limit to your records
 
 # 4. Projection
 
--   if nothing specified, means all fields will be displayed by default
+- if nothing specified, means all fields will be displayed by default
 
 ```
 # return data with fields name and founded_year only
@@ -312,16 +312,16 @@ db.person.updateMany({"name": "Test1"}, {$set: {"name": "Tester 1"}})
 
 ```
 
--   if field is not present before, it will be implicitly added to the schema.
+- if field is not present before, it will be implicitly added to the schema.
 
 <br>
 
 ## Update Operators
 
--   $unset // dropping fields
--   $inc // increment number values
--   $rename // rename the field basically
--   $push // add elements to array types
+- $unset // dropping fields
+- $inc // increment number values
+- $rename // rename the field basically
+- $push // add elements to array types
 
 ```
 
@@ -336,15 +336,15 @@ db.person.updateMany({}, {$unset:{"new_field": ""}})
 
 ## upsert
 
--   The term upsert is a portmanteau – a combination of the words “update” and “insert.”
--   In the context of relational databases, an upsert is a database operation that will update an existing row if a specified value already exists in a table, and insert a new row if the specified value doesn't already exist.
+- The term upsert is a portmanteau – a combination of the words “update” and “insert.”
+- In the context of relational databases, an upsert is a database operation that will update an existing row if a specified value already exists in a table, and insert a new row if the specified value doesn't already exist.
 
 <br>
 <br>
 
 # 8. Aggregation Framework
 
--   Aggregation Framework allows for more advanced operations
+- Aggregation Framework allows for more advanced operations
 
 <br>
 
@@ -360,8 +360,8 @@ db.collection.aggregate([{stage 1}, {stage 2}, ...{stage N}], {options})
 
 ## $match
 
--   like a filter based on the specific condition
--   only those who meet the condition get passed on the next stage of the pipeline
+- like a filter based on the specific condition
+- only those who meet the condition get passed on the next stage of the pipeline
 
 ```
 db.companies.aggregate([{$match: {"founded_year": {$gte: 2005, $lte:2010}}}])
@@ -478,7 +478,7 @@ db.trips.aggregate([
 
 ## $bucket
 
--   Categorizes incoming documents into groups, called buckets
+- Categorizes incoming documents into groups, called buckets
 
 ```
 
@@ -501,7 +501,7 @@ db.trips.aggregate([
 
 ## $facet
 
--   The facet collector groups results by values or ranges in the specified faceted fields and returns the count for each of those groups.
+- The facet collector groups results by values or ranges in the specified faceted fields and returns the count for each of those groups.
 
 ```
 
@@ -531,14 +531,14 @@ db.trips.aggregate([
 
 ### operator $lookup
 
--   similar to left outer join
--   an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in another collection ("from"), matcing documents are added as an array of embedded documents.
+- similar to left outer join
+- an additional aggregation pipeline stage that can takes each document from a collection ("to") and matches it to a document in another collection ("from"), matcing documents are added as an array of embedded documents.
 
 <br>
 
 ### $unwind
 
--   $unwind Deconstructs an array field from the input documents to output a document for each element. Each output document is the input document with the value of the array field replaced by the element.
+- $unwind Deconstructs an array field from the input documents to output a document for each element. Each output document is the input document with the value of the array field replaced by the element.
 
 ```
 { "_id" : 1, "item" : "ABC", "sizes": [ "S", "M", "L"] }
@@ -562,8 +562,8 @@ db.trips.aggregate([
 
 # 9. Schema Validation
 
--   Schema validation is most useful for an established application where you have a good sense of how to organize our data.
--   Schema validation allows you to apply constraints on your document's structure.
+- Schema validation is most useful for an established application where you have a good sense of how to organize our data.
+- Schema validation allows you to apply constraints on your document's structure.
 
 <br>
 
@@ -576,8 +576,8 @@ Example
 
 When does MongoDB checks validation?
 
--   During creation of a new collection with schema validation, MongoDB checks validation during `updates` and `inserts` in that collection.
--   This means documents that already exists are not checked for validation until they are modified.
+- During creation of a new collection with schema validation, MongoDB checks validation during `updates` and `inserts` in that collection.
+- This means documents that already exists are not checked for validation until they are modified.
 
 <br>
 
@@ -639,7 +639,7 @@ validator: {
 
 ## Validation for `null` Field Values
 
--   must explicitly set the bsonType to allow null values
+- must explicitly set the bsonType to allow null values
 
 ```
 
@@ -736,18 +736,18 @@ moderate --> MongoDB only applies validation rules to existing valid documents. 
 
 ### Types Of Relationships
 
--   One-To-One --> recommended to store as embedded documents
--   One-To-Many --> recommended to store as seperate collections, then reference the object. However it also depends on the nature of the situation
--   Many-To-Many --> recommended to store as seperate collections
+- One-To-One --> recommended to store as embedded documents
+- One-To-Many --> recommended to store as seperate collections, then reference the object. However it also depends on the nature of the situation
+- Many-To-Many --> recommended to store as seperate collections
 
 <br>
 <br>
 
 # 10. Indexes
 
--   supports efficient execution of queries
--   Indexes however takes up storage space
--   should be created on commonly queried fields
+- supports efficient execution of queries
+- Indexes however takes up storage space
+- should be created on commonly queried fields
 
 ```
 
@@ -759,16 +759,16 @@ db.collection.createIndex(keys, options)
 
 ### More about B-Tree indexes
 
--   Imagining searching through a book, the fastest way is to look through the index page
+- Imagining searching through a book, the fastest way is to look through the index page
 
 <br>
 
 <h4>B Trees</h4>
 
--   Store more than one value in a single node
--   have more than two children per node
--   idea is to keep the level of the tree as low as possible so there is no need to traverse through so much.
--   The lower value goes to the left, higher value goes to the right
+- Store more than one value in a single node
+- have more than two children per node
+- idea is to keep the level of the tree as low as possible so there is no need to traverse through so much.
+- The lower value goes to the left, higher value goes to the right
 
 https://www.cs.usfca.edu/~galles/visualization/BTree.html
 
@@ -785,8 +785,8 @@ db.collection.method().explain("executionStats")
 
 ### Compound Indexes
 
--   For sorting and filtering, you must follow the order you indexed by!!
--   if not it will not work
+- For sorting and filtering, you must follow the order you indexed by!!
+- if not it will not work
 
 Example
 
@@ -805,7 +805,32 @@ sort by {"student_id": 1, "class_id": 265 }
 
 ### Hint
 
--   Force mongoDB to use a certain index
+- Force mongoDB to use a certain index
 
 <br>
 <br>
+
+# Misc Unorganised Notes from MongoDB Day
+
+MongoDB modelling notes
+
+- model to face and answer to constraints
+
+MongoDb features
+
+- document model
+- indexes
+- sharding
+- Field level Encryption
+
+number of collections depend on your access pattern
+
+Techniques to model for MongoDB
+
+1. workload
+   1. size the data
+   2. quantify operations (listing operations)
+   3. qualify operations
+2. relations
+
+\*what is used tgt in the application is stored tgt in the db
